@@ -51,23 +51,24 @@ def tokenize(line):
     tokens.append(token)
   return tokens
 
-#evaluate for multiplication and division, return new set of tokens
+# Evaluate for multiplication and division, return new set of tokens
 def firstEvaluate(tokens):
   newTokens = []
   index = 0
   newIndex = 0
   while index < len(tokens):
     if tokens[index]['type'] == 'MULTIPLY':
-      newTokens[newIndex - 1]['number'] = tokens[index - 1]['number'] * tokens[index + 1]['number']
+      newTokens[newIndex - 1]['number'] = newTokens[newIndex - 1]['number'] * tokens[index + 1]['number']
       index += 2
     elif tokens[index]['type'] == 'DIVIDE':
-      newTokens[newIndex - 1]['number'] = tokens[index - 1]['number'] / tokens[index + 1]['number']
+      newTokens[newIndex - 1]['number'] = newTokens[newIndex - 1]['number'] / tokens[index + 1]['number']
       index += 2
     else:
       newTokens.append(tokens[index])
       newIndex += 1
       index += 1
   return newTokens
+
 
 def secondEvaluate(tokens):
   answer = 0
@@ -97,12 +98,23 @@ def test(line):
     print("FAIL! (%s should be %f but was %f)" % (line, expectedAnswer, actualAnswer))
 
 
-# Add more tests to this function :)
 def runTest():
   print("==== Test started! ====")
+  test("1")
   test("1+2")
+  test("1.0+2")
+  test("1.0-2")
+  test("1.0+2.0")
+  test("1.0-2.0")
   test("1.0+2.1-3")
-  test("3.0+4*2-1/5")
+  test("1*2")
+  test("1.0*2")
+  test("1.0/2")
+  test("1.0*2.0")
+  test("1.0/2.0")
+  test("1.0*2.0/3")
+  test("1.0+2-3.0*4/5.0")
+  test("1.2+3.4*5-6/7.8")
   print("==== Test finished! ====\n")
 
 runTest()
@@ -111,6 +123,6 @@ while True:
   print('> ', end="")
   line = input()
   tokens = tokenize(line)
-  tokens = firstEvaluate(tokens)
-  answer = secondEvaluate(tokens)
+  newTokens = firstEvaluate(tokens)
+  answer = secondEvaluate(newTokens)
   print("answer = %f\n" % answer)
